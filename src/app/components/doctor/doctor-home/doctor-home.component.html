@@ -1,0 +1,204 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="logo">
+    <div style="margin: 0 auto;">
+        <div *ngIf='loggedInUser.userRole=="DOCTOR"' class="doc-header">
+            <a>Hi {{loggedInUser.name}}</a>
+        </div>
+        <div *ngIf='loggedInUser.userRole=="DOCTOR"'><a>Welcome to Anastocare Doctor's Portal </a></div>
+    </div>
+    <button style="margin-right: 15px;" (click)="gotoProfile()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">person
+        </mat-icon>
+    </button>
+
+    <button mat-mini-fab color="primary" id="btn-logout">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon"
+            (click)="logout()">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+<br>
+<br>
+<br>
+<br>
+
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="DOCTOR"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%; padding: 3%; " class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF Patients</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,2)" placeholder="Search">
+        </mat-form-field>
+    </div>
+
+    <mat-tab-group (selectedIndexChange)="tabChange($event)" [selectedIndex]="active" animationDuration="300ms">
+        <mat-tab label="Current">
+            <mat-table [dataSource]="patients" matSort>
+                <!-- [dataSource]="dataSource" -->
+                <ng-container matColumnDef="patientName">
+                    <mat-header-cell *matHeaderCellDef> Patient Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" (click)="openList(row,2)">{{row.name}}
+                        <!-- <div class="inner" (click)="openList(row,2)">
+                <button mat-stroked-button color="primary">{{row.name}}</button>
+            </div> -->
+                    </mat-cell>
+                </ng-container>
+
+
+                <ng-container matColumnDef="questionnaire">
+                    <mat-header-cell *matHeaderCellDef> Patient Condition </mat-header-cell>
+                    <mat-cell *matCellDef="let row" [ngStyle]="{'color': chooseColor(row)}">
+                        <p> {{row.patientCondition}} </p>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="color">
+                    <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button class="icon-button" (click)="openView(row)">
+                            <mat-icon matTooltip="View more information" matTooltipPosition="above"
+                                style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                                remove_red_eye
+                            </mat-icon>
+
+                        </button>
+
+
+
+                    </mat-cell>
+
+                </ng-container>
+
+                <mat-header-row style="z-index:0" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+
+            </mat-table>
+
+        </mat-tab>
+
+
+        <mat-tab label="Previous">
+            <mat-table [dataSource]="patients2" matSort>
+                <!-- [dataSource]="dataSource" -->
+                <ng-container matColumnDef="patientName">
+                    <mat-header-cell *matHeaderCellDef> Patient Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" (click)="openInactiveList(row,2)">{{row.name}}
+                        <!-- <div class="inner" (click)="openList(row,2)">
+                <button mat-stroked-button color="primary">{{row.name}}</button>
+            </div> -->
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="color">
+                    <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button class="icon-button" (click)="openView(row)">
+                            <mat-icon matTooltip="View more information" matTooltipPosition="above"
+                                style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                                remove_red_eye
+                            </mat-icon>
+
+                        </button>
+
+
+
+                    </mat-cell>
+
+                </ng-container>
+
+                <mat-header-row style="z-index:0" *matHeaderRowDef="displayedColumns2; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns2;">
+                </mat-row>
+
+            </mat-table>
+
+        </mat-tab>
+    </mat-tab-group>
+
+
+
+
+    <!-- delet from here -->
+    <!-- <button class="btn btn-danger" (click)="triggerModal(modalData)">Open Modal</button>
+
+<ng-template #modalData let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Angular Bootstrap Modal Popup</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-boy">
+    <p><strong>Are you sure you want to delete <span class="text-primary">"Agatha Harkness"</span> profile?</strong></p>
+    
+    <p>All data related to west view profile will be removed permanently.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template> -->
+    <!-- to here -->
+
+
+    <!-- 
+ here onwards is ng table
+<div *ngIf='loggedInUser.userRole && loggedInUser.userRole=="DOCTOR"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%;padding: 3%;" class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="patientdetails"> Patient Details</p>
+    
+    </div>
+
+    <ng2-smart-table [settings]="settings" [source]="source" (custom)="onCustom($event)"></ng2-smart-table> -->
+    <!-- till here smart table -->
+
+
+    <!-- <div class="table-container">
+        <br>
+        <br>
+        <table>
+            <tr class="table-header">
+                <th *ngFor = "let column of header">
+                    {{column}}
+                </th>
+            </tr>
+            <tr *ngFor = "let row of rows"> 
+                <td *ngFor = "let column of headers">
+                    {{row[column]}}
+                </td>
+            </tr>
+        </table>
+    </div> -->
+    <!-- <mat-table style="margin-bottom: 26px;" [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Organisation Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="edit(row,1)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,1)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row style="z-index:0" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>  
+    </mat-table>
+    <div style="width: 20%" class="example-button-row">
+       
+         
+    </div>
+</div> -->

@@ -1,0 +1,38 @@
+.main-class {
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    place-content: center;
+}
+
+.row {
+    /* text-align: center; */
+    font-size: xx-large
+}
+
+.mini-row {
+    margin: 2%;
+    /* width: 60%; */
+    background: white;
+    padding: 21px;
+    line-height: 1em;
+}
+
+.pic-col {
+    /* width: 300px; */
+    align-items: center;
+    text-align: center;
+    display: flex;
+}
+
+.image-style {
+    clip-path: circle();
+    max-width: 100%;
+    height: auto;
+}
+
+.col2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

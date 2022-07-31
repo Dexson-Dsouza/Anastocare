@@ -1,0 +1,923 @@
+<mat-toolbar color="primary" class="app-header">
+    <img class="logo" [src]="logo">
+    <div *ngIf='loggedInUser.userRole=="ADMIN"'><a>Global Admin Homepage</a></div>
+    <div *ngIf='loggedInUser.userRole=="LOCAL_ADMIN"'><a>Admin Page {{loggedInUser.organisationName?'for\
+        '+loggedInUser.organisationName:""}}</a></div>
+    <button (click)="logout()" mat-mini-fab color="primary">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="ADMIN"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%;padding: 3%;" class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF ORGANISATIONS</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,1)" placeholder="Search">
+        </mat-form-field>
+    </div>
+    <mat-table style="margin-bottom: 26px;" [dataSource]="dataSource" matSort>
+        <!-- ID Column -->
+        <!-- <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> SR NO </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+        </ng-container> -->
+
+        <!-- Progress Column -->
+        <!-- <ng-container matColumnDef="progress">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Progress </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.progress}}% </mat-cell>
+        </ng-container> -->
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Organisation Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        </ng-container>
+
+        <!-- Color Column -->
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="view_list_org(row)">
+                    <mat-icon matTooltip="View list of Admin and Doctors" matTooltipPosition="above"
+                        style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                        remove_red_eye
+                    </mat-icon>
+                </button>
+                <button class="icon-button" (click)="edit(row,1)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,1)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+
+
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row style="z-index:0" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+    </mat-table>
+    <div style="width: 20%" class="example-button-row">
+        <!-- <div class="inner">
+            <button (click)="viewQuestionaire()" style="float: left;" mat-raised-button color="primary">View Questionaire</button>
+        </div> -->
+        <div class="inner">
+            <button style="float: right" mat-raised-button color="primary" (click)="open(addOrg,1)">Add
+                Organisation</button>
+        </div>
+    </div>
+    <!-- <mat-paginator [pageSizeOptions]="[10]"></mat-paginator> -->
+</div>
+
+
+<!-- Copyright 2018 Google Inc. All Rights Reserved.
+      Use of this source code is governed by an MIT-style license that
+      can be found in the LICENSE file at http://angular.io/license -->
+
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="ADMIN"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%; padding: 3%; " class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF USERS</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,2)" placeholder="Search">
+        </mat-form-field>
+    </div>
+    <mat-table *ngIf="users && users.data && users.data.length>0" style="margin-bottom: 26px;" [dataSource]="users"
+        matSort>
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> SR NO </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="orgname">
+            <mat-header-cell *matHeaderCellDef> Organisation Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.orgname}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> <span> {{row.name}} </span>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef> User Type </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                {{row.status}}
+                <button *ngIf=' row.status=="Pending verification"' class="icon-button" (click)="send_link(row)">
+                    <mat-icon matTooltip="Click here to send Activation link" matTooltipPosition="above"
+                        style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                        unarchive
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="openView(row)">
+                    <mat-icon matTooltip="View more information" matTooltipPosition="above" style="margin-left: 10%;"
+                        aria-hidden="false" aria-label="Example home icon">
+                        remove_red_eye
+                    </mat-icon>
+                </button>
+                <button class="icon-button" (click)="edit(row,2)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,2)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns2,sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns2;">
+        </mat-row>
+    </mat-table>
+    <div style="font-size:large;background-color: white;" *ngIf="!users || !users.data || users.data.length==0">
+        <p style="margin: 15px;"> No Doctors Available.</p>
+    </div>
+    <div style="width: 20%" class="example-button-row">
+        <div class="inner">
+            <button style="float: left;" mat-raised-button color="primary" (click)="open(addOrg,2)"> Add User</button>
+        </div>
+    </div>
+
+</div>
+
+
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="LOCAL_ADMIN"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%; padding: 3%; " class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF DOCTORS</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,2)" placeholder="Search">
+        </mat-form-field>
+    </div>
+    <mat-table *ngIf="doctors && doctors.data && doctors.data.length>0" style="margin-bottom: 26px;"
+        [dataSource]="doctors" matSort>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> <span> {{row.name}} </span>
+            </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="patientCount">
+            <mat-header-cell *matHeaderCellDef> Patients Assigned </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <div class="inner" (click)="openList(row,2)">
+                    <button mat-stroked-button color="primary">{{row.patientCount}}</button>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                {{row.status}}
+                <button *ngIf=' row.status=="Pending verification"' class="icon-button" (click)="send_link(row)">
+                    <mat-icon matTooltip="Click here to send Activation link" matTooltipPosition="above"
+                        style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                        unarchive
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="openView(row)">
+                    <mat-icon matTooltip="View more information" matTooltipPosition="above" style="margin-left: 10%;"
+                        aria-hidden="false" aria-label="Example home icon">
+                        remove_red_eye
+                    </mat-icon>
+                </button>
+                <button class="icon-button" (click)="edit(row,2)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,2)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns4,sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns4;">
+        </mat-row>
+    </mat-table>
+    <div style="font-size:large;background-color: white;" *ngIf="!doctors || !doctors.data || doctors.data.length==0">
+        <p style="margin: 15px;"> No Doctors Available.</p>
+    </div>
+    <div style="width: 20%" class="example-button-row">
+        <div class="inner">
+            <button style="float: left;" mat-raised-button color="primary" (click)="open(addOrg,2)">Add Doctor</button>
+        </div>
+    </div>
+
+</div>
+
+
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="LOCAL_ADMIN"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%; padding: 3%; " class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF PATIENTS</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,2)" placeholder="Search">
+        </mat-form-field>
+    </div>
+    <mat-table *ngIf="patients && patients.data && patients.data.length>0" style="margin-bottom: 26px;"
+        [dataSource]="patients" matSort>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> <span> {{row.name}} </span>
+            </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="assignedDoctor">
+            <mat-header-cell *matHeaderCellDef> Doctors Assigned </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.assignedDoctor}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                {{row.status}}
+                <button *ngIf=' row.status=="Pending verification"' class="icon-button" (click)="send_link(row)">
+                    <mat-icon matTooltip="Click here to send Activation link" matTooltipPosition="above"
+                        style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">
+                        unarchive
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="openView(row)">
+                    <mat-icon matTooltip="View more information" matTooltipPosition="above" style="margin-left: 10%;"
+                        aria-hidden="false" aria-label="Example home icon">
+                        remove_red_eye
+                    </mat-icon>
+                </button>
+                <button class="icon-button" (click)="editPatient(row,2)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,2)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns5,sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns5;">
+        </mat-row>
+    </mat-table>
+    <div style="font-size:large;background-color: white;"
+        *ngIf="!patients || !patients.data || patients.data.length==0">
+        <p style="margin: 15px;"> No Patients Available.</p>
+    </div>
+    <!-- <div style="width: 20%" class="example-button-row">
+        <div class="inner">
+            <button style="float: left;" mat-raised-button color="primary" (click)="open(addOrg,2)">Add Doctor</button>
+        </div>
+    </div> -->
+
+</div>
+
+
+
+<div *ngIf=' loggedInUser.userRole && loggedInUser.userRole=="ADMIN"'
+    style="width: 90%; margin: 0 auto; margin-top: 6%; padding: 3%; " class="example-container mat-elevation-z8">
+    <div style="padding: 2%;">
+        <p style="display:inline-block" id="tablehead"> LIST OF QUESTIONS</p>
+        <mat-form-field style="width: 20%;float: right;">
+            <input matInput (keyup)="applyFilter($event.target.value,3)" placeholder="Search">
+        </mat-form-field>
+    </div>
+    <mat-table style="margin-bottom: 26px;" [dataSource]="questions" matSort>
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index;"> {{i+1}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Question </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.description}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="color">
+            <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button class="icon-button" (click)="edit(row,3)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+                </button>
+                <button class="icon-button" (click)="delete_confirm(row,3)">
+                    <mat-icon style="margin-left: 10%;" aria-hidden="false" aria-label="Example home icon">delete
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns3,sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns3;let i = index">
+        </mat-row>
+    </mat-table>
+    <div style="width: 100%" class="example-button-row">
+        <div class="inner">
+            <button style="float: left;" mat-raised-button color="primary" (click)="open(addOrg,3)">
+                Add Question
+            </button>
+            <br>
+            <div class="threshold_div">
+                <div style="border: transparent;border-style: groove;">
+                    Threshold = {{thresholdval}}
+                </div>
+                <button class="icon-button">
+                    <mat-icon class="threshold_icon" aria-hidden="false" (click)="EditThreshold()"
+                        aria-label="Example home icon">
+                        edit
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template id="custom-modal" #editPatientMod let-modal>
+    <div class="modal-header">
+        <h4 style="margin-top: 15px;margin-left: 37%;font-size: large;" class="modal-title" id="modal-basic-title">
+            Edit Patient</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss(' Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="patient_form" (ngSubmit)="savepatient()">
+                    <div style="text-align: center;font-size: large;">
+                        Set Doctor for {{temp.name}}
+                    </div>
+                    <div class="form-group">
+                        <!-- <label>Enter Organisation Name</label> -->
+                        <!-- <input style="margin-top: 16px" type="text" formControlName="name" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && patient_form.controls.name.errors }"
+                            placeholder="Enter First Name" />
+                        <div *ngIf="submitted && patient_form.controls.name.errors" class="invalid-feedback">
+                            <div *ngIf="patient_form.controls.name.errors.required">First Name is required</div>
+                        </div>
+
+                        <input style="margin-top: 16px" type="text" formControlName="lname" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && patient_form.controls.lname.errors }"
+                            placeholder="Enter Last Name" />
+                        <div *ngIf="submitted && patient_form.controls.lname.errors" class="invalid-feedback">
+                            <div *ngIf="patient_form.controls.lname.errors.required">Last Name is required</div>
+                        </div>
+
+                        <input [readonly]="edit_data" style="margin-top: 16px" type="text" formControlName="email" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && patient_form.controls.email.errors }"
+                            placeholder="Enter Email" />
+                        <div *ngIf="submitted && patient_form.controls.email.errors" class="invalid-feedback">
+                            <div *ngIf="patient_form.controls.email.errors.required">Email is required</div>
+                            <div *ngIf="patient_form.controls.email.errors.email">Invalid Email</div>
+                        </div>
+
+                        <input style="margin-top: 16px" type="text" formControlName="phone" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && patient_form.controls.phone.errors }"
+                            placeholder="Enter Phone No." />
+                        <div *ngIf="submitted && patient_form.controls.phone.errors" class="invalid-feedback">
+                            <div *ngIf="patient_form.controls.phone.errors.required">Phone No is required</div>
+                            <div *ngIf="patient_form.controls.phone.errors.pattern">Phone No must contains 10 digits
+                            </div>
+                        </div> -->
+
+                        <select style="margin-top: 16px" class="form-control" formControlName="Doctor">
+                            <option value=null selected disabled>Select Doctor</option>
+                            <option value={{d.userId}} *ngFor="let d of docList">
+                                {{d.name}}</option>
+                        </select>
+                        <div *ngIf="submitted && patient_form.controls.Doctor.errors" style="width: 100%;
+                        margin-top: 0.25rem;
+                        font-size: .875em;
+                        color: #dc3545;">
+                            <div *ngIf=" submitted && patient_form.controls.Doctor.errors.required ">Doctor is required.
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template id="custom-modal" #userOrg let-modal>
+    <div class="modal-header">
+        <h4 style="margin-top: 15px;margin-left: 37%;font-size: large;" class="modal-title" id="modal-basic-title">
+            Map User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss(' Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="userOrg_form" (ngSubmit)="mapUserOrg()">
+                    <div style="text-align: center;font-size: large;">
+                        Select Organisation for {{temp.name}}
+                    </div>
+                    <div class="form-group">
+                        <select style="margin-top: 16px" class="form-control" formControlName="orgId">
+                            <option value=null selected disabled>Select Organisation</option>
+                            <option value={{d.orgId}} *ngFor="let d of orgList">
+                                {{d.description}}</option>
+                        </select>
+                        <div *ngIf="submitted && userOrg_form.controls.orgId.errors" style="width: 100%;
+                        margin-top: 0.25rem;
+                        font-size: .875em;
+                        color: #dc3545;">
+                            <div *ngIf=" submitted && userOrg_form.controls.orgId.errors.required ">Please select an
+                                Organisation.
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template id="custom-modal" #addOrg let-modal>
+    <div class="modal-header">
+        <h4 style="margin-top: 15px;margin-left: 37%;font-size: large;" class="modal-title" id="modal-basic-title">
+            {{title}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div *ngIf="type==1" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="organisation_form" (ngSubmit)="saveOrganisation()">
+                    <div class="form-group">
+                        <!-- <label>Enter Organisation Name</label> -->
+                        <!-- <input type="text" formControlName="orgId" class="form-control" hidden /> -->
+                        <input type="text" formControlName="description" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && organisation_form.controls.description.errors }"
+                            placeholder="Enter Organisation Name" />
+                        <div *ngIf="submitted && organisation_form.controls.description.errors"
+                            class="invalid-feedback">
+                            <div *ngIf="organisation_form.controls.description.errors.required">Name is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div *ngIf="type==2" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="admin_form" (ngSubmit)="saveAdmin()">
+                    <div class="form-group">
+                        <select [disabled]="edit_data" (change)="changed($event)" [(ngModel)]="user_type"
+                            [ngModelOptions]="{standalone: true}" *ngIf='loggedInUser.userRole=="ADMIN"'
+                            style="margin-top: 16px" class="form-control" style="-webkit-appearance: auto;">
+                            <option disabled> Select Type of User </option>
+
+                            <option value=0> Doctor </option>
+                            <option value=1> Local Admin </option>
+                            <option value=2> Global Admin </option>
+                        </select>
+                        <!-- <label>Enter Organisation Name</label> -->
+                        <input style="margin-top: 16px" type="text" formControlName="name" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.name.errors }"
+                            placeholder="Enter First Name" />
+                        <div *ngIf="submitted && admin_form.controls.name.errors" class="invalid-feedback">
+                            <div *ngIf="admin_form.controls.name.errors.required">First Name is required</div>
+                        </div>
+
+                        <input style="margin-top: 16px" type="text" formControlName="lname" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.lname.errors }"
+                            placeholder="Enter Last Name" />
+                        <div *ngIf="submitted && admin_form.controls.lname.errors" class="invalid-feedback">
+                            <div *ngIf="admin_form.controls.lname.errors.required">Last Name is required</div>
+                        </div>
+
+                        <input [readonly]="edit_data" style="margin-top: 16px" type="text" formControlName="email"
+                            class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.email.errors }"
+                            placeholder="Enter Email" />
+                        <div *ngIf="submitted && admin_form.controls.email.errors" class="invalid-feedback">
+                            <div *ngIf="admin_form.controls.email.errors.required">Email is required</div>
+                            <div *ngIf="admin_form.controls.email.errors.email">Invalid Email</div>
+                        </div>
+
+                        <input style="margin-top: 16px" type="text" formControlName="phone" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.phone.errors }"
+                            placeholder="Enter Phone No." />
+                        <div *ngIf="submitted && admin_form.controls.phone.errors" class="invalid-feedback">
+                            <div *ngIf="admin_form.controls.phone.errors.required">Phone No is required</div>
+                            <div *ngIf="admin_form.controls.phone.errors.pattern">Phone No must contains 10 digits
+                            </div>
+                        </div>
+                        <div *ngIf="user_type!=2">
+                            <select *ngIf='loggedInUser.userRole=="ADMIN"'
+                                style="margin-top: 16px;-webkit-appearance: auto;" class="form-control"
+                                formControlName="OrganisationId">
+                                <option value=null selected disabled>Select Organisation</option>
+                                <option value={{org.orgId}} *ngFor="let org of orgList">
+                                    {{org.description}}</option>
+                            </select>
+                            <div *ngIf='loggedInUser.userRole=="ADMIN"' style="width: 100%;
+                        margin-top: 0.25rem;
+                        font-size: .875em;
+                        color: #dc3545;">
+                                <div *ngIf=" submitted && !admin_form.value.OrganisationId ">Organisation is required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div *ngIf="type==3" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="question_form" (ngSubmit)="saveQuestion()">
+                    <div class="form-group">
+                        <!-- <label>Enter Organisation Name</label> -->
+                        <input type="text" formControlName="description" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && question_form.controls.description.errors }"
+                            placeholder="Enter Question" />
+                        <div *ngIf="submitted && question_form.controls.description.errors" class="invalid-feedback">
+                            <div *ngIf="question_form.controls.description.errors.required">Question is required
+                            </div>
+                        </div>
+                        <select style="margin-top: 16px" class="form-control" formControlName="answerType"
+                            [ngClass]="{ 'is-invalid': submitted && question_form.controls.answerType.errors }">
+                            <option value=null selected disabled>Select Answer Type</option>
+                            <option value=1>Binary</option>
+                            <option value=2>Likert</option>
+                        </select>
+                        <div *ngIf="submitted && question_form.controls.answerType.errors" class="invalid-feedback">
+                            <div *ngIf="question_form.controls.answerType.errors.required">Question Type is required
+                            </div>
+                        </div>
+                        <!-- <input hidden type="text" formControlName="description" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && question_form.controls.description.errors }"
+                            placeholder="Enter Question" />
+                        <div *ngIf="submitted && question_form.controls.questionOrder.errors" class="invalid-feedback">
+                            <div *ngIf="question_form.controls.questionOrder.errors.required">Question Order is required
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+    </div> -->
+</ng-template>
+
+
+<ng-template id="custom-modal" #delete let-modal>
+    <div class="modal-header">
+        <h4 style="margin-top: 15px;margin-left: 37%;font-size: large;" class="modal-title" id="modal-basic-title">
+            {{title}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div *ngIf="type==1" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="organisation_form" (ngSubmit)="deleteOrganisation()">
+                    <div class="form-group">
+                        <!-- <label>Enter Organisation Name</label> -->
+                        <!-- <input type="text" formControlName="description" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && organisation_form.controls.description.errors }"
+                            placeholder="Enter Organisation Name" disabled /> -->
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Confirm
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div *ngIf="type==2" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="admin_form" (ngSubmit)="deleteAdmin()">
+                    <!-- <div class="form-group">
+                        <input style="margin-top: 16px" type="text" formControlName="name" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.name.errors }"
+                            placeholder="Enter Name" disabled />
+                        <input style="margin-top: 16px" type="text" formControlName="email" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.email.errors }"
+                            placeholder="Enter Email" disabled />
+
+                    </div> -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Confirm
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div *ngIf="type==3" class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <form [formGroup]="admin_form" (ngSubmit)="deleteQues()">
+                    <!-- <div class="form-group">
+                        <input style="margin-top: 16px" type="text" formControlName="name" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.name.errors }"
+                            placeholder="Enter Name" disabled />
+                        <input style="margin-top: 16px" type="text" formControlName="email" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && admin_form.controls.email.errors }"
+                            placeholder="Enter Email" disabled />
+
+                    </div> -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Confirm
+                        </button>
+                        <button type="button" (click)="Close()" class="btn btn-warning float-right">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template id="custom-modal" #view let-modal>
+    <div class="modal-header">
+        <h4 style="margin-top: 15px;margin-left: 37%;font-size: large;" class="modal-title" id="modal-basic-title">
+            Profile</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div style="width: 69%;" class="login-form">
+                <mat-list>
+                    <mat-list-item>
+                        <div *ngIf="table_user.name" matLine>
+                            <p style="float:left">Name</p>
+                            <p style="margin-left: 55%;">{{table_user.name}}</p>
+                        </div>
+                        <div *ngIf="table_user.lname" matLine>
+                            <p style="float:left">Last Name</p>
+                            <p style="margin-left: 55%;">{{table_user.lname}}</p>
+                        </div>
+                        <div *ngIf="table_user.email" matLine>
+                            <p style="float:left">Email</p>
+                            <p style="margin-left: 55%;">{{table_user.email}}</p>
+                        </div>
+                        <div *ngIf="table_user.org_name" matLine>
+                            <p style="float:left">Organisation</p>
+                            <p style="margin-left: 55%;">{{table_user.org_name}}</p>
+                        </div>
+                        <div *ngIf="table_user.phone" matLine>
+                            <p style="float:left">Contact No.</p>
+                            <p style="margin-left: 55%;">{{table_user.phone}}</p>
+                        </div>
+                        <div *ngIf="table_user.type" matLine>
+                            <p style="float:left">Type of User</p>
+                            <p style="margin-left: 55%;">{{table_user.type}}</p>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template id="custom-modal" #viewList let-modal>
+    <div class="modal-header">
+        <div style="width: 100%; text-align: center;">
+            <h4 style="margin-top: 15px;font-size: large;" class="modal-title" id="modal-basic-title">
+                List of Assigned Patients
+            </h4>
+        </div>
+
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <div class="login-form">
+                <mat-list *ngIf="assignedPatients.length>0">
+                    <mat-list-item *ngFor="let x of assignedPatients">
+                        <div style="width: 100%; text-align: center;">{{x.name}}</div>
+                    </mat-list-item>
+                </mat-list>
+
+                <mat-list *ngIf="assignedPatients.length==0">
+                    <mat-list-item>
+                        <div style="width: 100%; text-align: center;"> No Patients Assigned.</div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template id="custom-modal" #threshold let-modal>
+    <div class="modal-header">
+        <div style="width: 100%; text-align: center;">
+            <h4 style="margin-top: 15px;font-size: large;" class="modal-title" id="modal-basic-title">
+                Set Threshold Value
+            </h4>
+        </div>
+
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <form style="text-align: -webkit-center;">
+                <div style="text-align: -webkit-center; width: 40%;" class="form-group">
+                    <input style="text-align: center;" class="btn btn-primary" type="number"
+                        (ngModelChange)="checkrange($event)" [(ngModel)]="t_val" [ngModelOptions]="{standalone: true}"
+                        class="form-control" />
+                </div>
+                <div *ngIf="thresHoldError" style="color: red; ">
+                    Threshold must be between 0-10
+                </div>
+                <div class="form-group" style="text-align: center; width: 40%;">
+                    <button style="width: 100%;" type="submit" (click)="saveThresHold()"
+                        class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template id="custom-modal" #viewListOrg let-modal>
+    <div class="main-wrapper modal-header" fxLayout="row" fxLayoutAlign="center center">
+        <div style="width: 58%;" class="login-form">
+            <mat-list>
+                <mat-list-item>
+                    <div style="font-weight: 1000;" matLine>
+                        <p style="float:left">ADMINS</p>
+                        <p style="float:right">DOCTORS</p>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+        <button style="position: absolute;right: 3%;" type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+        <div style="width: 69%;" class="login-form">
+            <div class="row">
+                <div class="column">
+                    <mat-list *ngIf="org_admins.length>0">
+                        <mat-list-item *ngFor="let row of org_admins">
+                            <div style="text-align: center;" matLine>
+                                <p>{{row.name}}</p>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+                    <div style="margin: 27px;text-align: center" *ngIf="org_admins.length==0">
+                        No Admins Available
+                    </div>
+                </div>
+                <div class="column">
+                    <mat-list *ngIf="org_docs.length>0">
+                        <mat-list-item *ngFor="let row of org_docs">
+                            <div style="text-align: center;" matLine>
+                                <p>{{row.name}}</p>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+
+                    <div style="margin: 27px; text-align: center;" *ngIf="org_docs.length==0">
+                        No Doctors Available
+                    </div>
+                </div>
+            </div>
+            <!-- <mat-grid-list cols="2">
+                <mat-grid-tile>
+                    <mat-list *ngIf="org_admins.length>0">
+                        <mat-list-item *ngFor="let row of org_admins">
+                            <div matLine>
+                                <p style="float:left">{{row.name}}</p>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+                    <div *ngIf="org_admins.length==0">
+                        No Admins Available
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-list>
+                        <mat-list-item *ngFor="let row of org_docs">
+                            <div matLine>
+                                <p style="float:right">{{row.name}}</p>
+                            </div>
+                        </mat-list-item>
+                    </mat-list>
+
+                    <div *ngIf="org_docs.length==0">
+                        No Doctors Available
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list> -->
+
+
+
+        </div>
+    </div>
+</ng-template>

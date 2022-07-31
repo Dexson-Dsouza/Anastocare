@@ -1,0 +1,106 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="commonService.logo">
+    <div style="margin: 0 auto;">Anastocare</div>
+    <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="gotoProfile()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">person
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="commonService.logout()" mat-mini-fab color="primary">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<div style="margin-top: 5%; padding-bottom: 5%;" class="container">
+    <div class="row">
+        <div class="col">
+            <div class="mini-row">First Name : {{loggedUser.fname}}</div>
+            <div class="mini-row">Last Name : {{loggedUser.lname}}</div>
+            <div class="mini-row">Email : {{loggedUser.email}}</div>
+            <div class="mini-row">Phone : {{loggedUser.phone}}</div>
+            <div class="mini-row">Organisation : {{loggedUser.organisationName}}</div>
+
+            <div *ngIf="loggedUser.assignedDoctors && loggedUser.assignedDoctors.length>0" class="mini-row">Doctor :
+                {{loggedUser.assignedDoctors[0].name}}</div>
+            <div *ngIf="loggedUser.assignedDoctors && loggedUser.assignedDoctors.length>0" class="mini-row">Doctor's Email:
+                {{loggedUser.assignedDoctors[0].email}}</div>
+            <div *ngIf="loggedUser.assignedDoctors && loggedUser.assignedDoctors.length>0" class="mini-row">Doctor's Contact :
+                {{loggedUser.assignedDoctors[0].phone}}</div>
+
+        </div>
+        <div class="col col2">
+            <div class=" pic-col">
+                <img class="image-style" [src]="uri?uri:default_pic" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="inner">
+                <div style="margin: 2%;width: 100%">
+                    <button style="float: left; font-size: x-large;" mat-raised-button color="primary"
+                        (click)="openEditModal()">
+                        Edit Profile
+                    </button>
+                </div>
+                <br>
+                <div style="margin: 2%;width: 100%;">
+                    <!-- <button style="float: left; font-size: x-large;" mat-raised-button color="primary">
+                        <input type="file" name="" id="">
+                        Upload Profile Picture
+                    </button> -->
+                    <button style="float: left; font-size: x-large;" mat-raised-button color="primary"
+                        (click)="fileInput.click()">Upload Profile Picture</button>
+                    <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file">
+                </div>
+                <br>
+                <div *ngIf="selectedFile" style="margin: 2%;width: 100%;">
+                    <button style="float: left; font-size: x-large;" mat-raised-button color="primary"
+                        (click)="upload()">
+                        Save <i>{{selectedFile.name}}</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template id="custom-modal" #EditProfile let-modal>
+    <div style="margin-top: 10%;padding: 40px;" class="register-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" formControlName="fullname" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.fullname.errors }" />
+                <div *ngIf="submitted && f.fullname.errors" class="invalid-feedback">
+                    <div *ngIf="f.fullname.errors.required">First Name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" formControlName="username" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Last Name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Phone No</label>
+                <input type="number" formControlName="phone" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.phone.errors }" />
+                <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                    <div *ngIf="f.phone.errors.required">Phone No is required</div>
+                    <div *ngIf="f.phone.errors.pattern">Phone No must contains 10 digits</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

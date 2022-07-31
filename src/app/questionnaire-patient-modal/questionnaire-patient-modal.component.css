@@ -1,0 +1,36 @@
+
+#modal-content-wrapper {
+    width: 100%;
+    height: 150%;
+    display: grid;
+    color: rgb(73, 73, 233);
+    grid-template-rows: repeat(1fr, 3);
+}
+.mat-row {
+    height: auto;
+  }
+  
+  .mat-cell {
+    padding: 8px 8px 8px 0;
+  }
+  .a.b {
+      padding: 15;
+      padding-right: 30;
+  }
+#modal-title {
+    font-size: 22px;
+}
+
+#modal-footer {
+    justify-self: right;
+    align-self: center;
+}
+
+#modal-action-button {
+    margin-right: 30px;
+    background-color:#a7443f;
+}
+
+#modal-cancel-button {
+    background-color: #d2b3b391;
+}

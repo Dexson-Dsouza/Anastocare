@@ -1,0 +1,140 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="logo">
+    <div style="margin: 0 auto;"><a>{{PatName}}'s questionnaire</a></div>
+    <!-- <div *ngIf='loggedInUser.userRole=="DOCTOR"'><a>{{loggedInUser.organisationName?'for\
+        '+loggedInUser.organisationName:""}}</a></div> -->
+    <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" id="btn-logout">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon"
+            (click)="logout()">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+<br>
+<br>
+<br>
+
+
+<mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="dateTaken">
+        <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <p> {{row.date}}</p>
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="timeTaken">
+        <mat-header-cell *matHeaderCellDef> Time </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <p> {{row.time}}</p>
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="view">
+        <mat-header-cell *matHeaderCellDef> View </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+
+            <button class="icon-button" (click)="openView(row)">
+                <mat-icon matTooltip="View more information" matTooltipPosition="above" style="margin-left: 10%;"
+                    aria-hidden="false" aria-label="Example home icon">
+                    remove_red_eye
+                </mat-icon>
+
+            </button>
+
+        </mat-cell>
+
+    </ng-container>
+
+    <mat-header-row style="z-index:0" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+
+</mat-table>
+
+
+
+
+
+
+
+
+
+
+<!-- 
+    <ng-template id="custom-modal" #viewList let-modal>
+        <div class="modal-header">
+            <div style="width: 100%; text-align: center;">
+                <h4 style="margin-top: 15px;font-size: large;" class="modal-title" id="modal-basic-title">
+                    List of Assigned Patients
+                </h4>
+            </div>
+    
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+    
+            <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+                <div class="login-form">
+                    <mat-list *ngIf="assignedPatients.length>0">
+                        <mat-list-item *ngFor="let x of assignedPatients">
+                            <div style="width: 100%; text-align: center;">{{x.name}}</div>
+                        </mat-list-item>
+                    </mat-list>
+    
+                    <mat-list *ngIf="assignedPatients.length==0">
+                        <mat-list-item>
+                            <div style="width: 100%; text-align: center;"> No Patients Assigned.</div>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </div>
+    </ng-template> -->
+
+<!-- <div class="mat-display-1"> -->
+
+<!-- <p> {{patientName}}'s health report</p> -->
+
+<!-- 
+    <mat-table >
+     [dataSource]="datasource" matSort> 
+     [dataSource]="dataSource"
+    <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef> Time taken </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.time}}
+            
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef> Date taken </mat-header-cell>
+        <mat-cell *matCellDef="let row"> <p> {{row.date}} </p></mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="color">
+    <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+       
+            <button class="icon-button" (click)="openView(row)">
+                <mat-icon matTooltip="View more information" matTooltipPosition="above" style="margin-left: 10%;"
+                    aria-hidden="false" aria-label="Example home icon">
+                    remove_red_eye
+                </mat-icon>
+                
+            </button>
+           
+            
+           
+        </mat-cell>
+
+</ng-container>
+    </mat-table> -->

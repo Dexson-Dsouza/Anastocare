@@ -1,0 +1,94 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+  <div><a href="#" target="_blank" class="positronx">AnastoCare</a></div>
+  <span class="nav-tool-items">
+    <button mat-button (click)="gotoLogin()">LogIn</button>
+    <button mat-button mat-raised-button>Register</button>
+  </span>
+</mat-toolbar>
+<div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+  <div style="margin-top: 10%;" class="register-form">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" formControlName="fullname" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.fullname.errors }" />
+        <div *ngIf="submitted && f.fullname.errors" class="invalid-feedback">
+          <div *ngIf="f.fullname.errors.required">First Name is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" formControlName="username" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Last Name is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Phone No</label>
+        <input type="number" formControlName="phone" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.phone.errors }" />
+        <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+          <div *ngIf="f.phone.errors.required">Phone No is required</div>
+          <div *ngIf="f.phone.errors.pattern">Phone No must contains 10 digits</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Please Select Your Doctor</label>
+        <mat-select class="form-control" formControlName="Doctor">
+          <input type="text" (keyup)="onKey($event.target.value)" class="form-control">
+          <mat-option value={{d.email}} *ngFor="let d of selectedDoc">
+            {{d.name}}</mat-option>
+        </mat-select>
+        <div *ngIf="submitted && f.Doctor.errors" class="invalid-feedback">
+          <div *ngIf=" submitted && f.Doctor.errors.required ">Doctor is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" formControlName="email" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          <div *ngIf="f.email.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.email">Email is invalid</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+          <div *ngIf="f.password.errors.minlength">
+            Password must be at least 5 characters
+          </div>
+          <div *ngIf="f.password.errors.maxlength">
+            Username must not exceed 40 characters
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" formControlName="confirmPassword" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+        <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+          <div *ngIf="f.confirmPassword.errors.required">
+            Confirm Password is required
+          </div>
+          <div *ngIf="f.confirmPassword.errors.matching">
+            Confirm Password does not match
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="button" (click)="onReset()" class="btn btn-warning float-right">
+          Reset
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

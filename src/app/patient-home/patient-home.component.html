@@ -1,0 +1,59 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="commonService.logo">
+    <div style="margin: 0 auto;">Anastocare</div>
+    <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="gotoProfile()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">person
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="commonService.logout()" mat-mini-fab color="primary">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+<div class=" container">
+    <div *ngIf="loggedInUser && loggedInUser.name" class="row">
+        <div class="col title-text">
+            <p>Hello {{loggedInUser.name}}, Welcome to AnastoCare!</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <img style="width: 100%;height: 80%;" [src]="graph_image" alt="">
+            <!-- <p> -->
+            <br>
+            <button (click)="gotoReports()" style="margin: 2%;" mat-raised-button color="primary">View Reports</button>
+            <!-- </p> -->
+        </div>
+        <div class="col">
+            <img style="width: 100%;height: 80%;" [src]="quesion_image" alt="">
+            <!-- <p> -->
+            <br>
+            <button (click)="gotoQuestionaire()" style="margin: 2%;" mat-raised-button color="primary">Take
+                Test</button>
+
+            <div style="margin-bottom: 4%;font-size: x-large;">
+                <p> You have taken {{today}} test
+                    today.</p>
+                <p *ngIf="lastTime"> Your
+                    last test was at {{formatAMPM(lastTime)}}</p>
+            </div>
+            <!-- </p> -->
+        </div>
+        <!-- <div class="col">
+            <img style="width: 43vw;" [src]="graph_image" alt="">
+            <br>
+            <button style="margin: 2%;" mat-raised-button color="primary">View Reports</button>
+        </div> -->
+    </div>
+    <!-- <div class="row">
+        <div class="col">
+            <img style="width: 43vw;" [src]="graph_image" alt="">
+            <br>
+            <button style="margin: 2%;" mat-raised-button color="primary">Take Questionnaire</button>
+        </div>
+    </div> -->
+</div>

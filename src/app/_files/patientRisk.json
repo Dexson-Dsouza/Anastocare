@@ -1,0 +1,7 @@
+[
+{"email" : "peter@mail.com", "riskFactor" : 7, "patientCondition" : "Bad"},
+{"email" : "miles@mail.com", "riskFactor" : 3, "patientCondition" : "Good"},
+{"email" : "gwen@mail.com", "riskFactor" : 2, "patientCondition" : "Good"},
+{"email" : "silvia@mail.com", "riskFactor" : 2, "patientCondition" : "Good"},
+{"email" : "arthur@mail.com", "riskFactor" : 7, "patientCondition" : "Bad"}
+]

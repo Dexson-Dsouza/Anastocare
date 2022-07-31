@@ -1,0 +1,209 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+.mini-row {
+    margin: 2%;
+    /* width: 60%; */
+    background: white;
+    padding: 21px;
+    line-height: 1em;
+}
+
+.col2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pic-col {
+    /* width: 300px; */
+    align-items: center;
+    text-align: center;
+    display: flex;
+}
+
+.example-header {
+    min-height: 64px;
+    padding: 8px 24px 0;
+}
+
+.table-container {
+    position: 'relative';
+}
+
+.table-header {
+    position: 'absolute';
+    top: 0px;
+}
+
+/* mat-icon {
+    padding-right: 15rem;
+} */
+.quantity {
+    color: #3dc153;
+    width: fit-content;
+    float: right;
+    font-size: large;
+
+}
+
+.label {
+    float: right;
+    font: 1rem 'Fira Sans', sans-serif;
+    font-size: large;
+    font-weight: 300;
+}
+
+.rangeID {
+    color: #ad273f;
+}
+
+.sliderClass {
+    border-radius: 50px;
+    width: 150px;
+    border-top: 50px;
+    height: 70px;
+    font-weight: bold;
+    color: orange;
+}
+
+.ng5-slider::ng-deep .ng5-slider-pointer:after {
+    display: none;
+}
+
+.ngx-slider-selection {
+    background: rgb(80, 145, 52);
+}
+
+.ngx-slider {
+    background: rgb(110, 9, 53);
+
+}
+
+.mat-form-field {
+    font-size: 13px;
+    width: 40%;
+    border-color: black;
+    font-weight: 400;
+    background-color: rgb(223, 215, 215);
+}
+
+.form-group {
+    display: inline-block;
+    padding-right: 1rem
+}
+
+#button3id {
+    color: rgb(231, 236, 241);
+    background-color: #ad273f;
+    border: 1px solid black;
+}
+
+.mat-table {
+    overflow: auto;
+    max-height: 300px;
+}
+
+#tablehead {
+    font-size: xxx-large;
+}
+
+.inner {
+    display: inline-block;
+}
+
+table {
+    width: 100%;
+}
+
+span {
+    font-size: medium;
+    font-weight: 500;
+}
+
+.gridSizeValue {
+    font-size: large;
+    font-weight: 500;
+}
+
+
+.mat-slider-thumb-label {
+    background-color: rgb(23, 39, 164) !important;
+
+}
+
+.mat-slider {
+    width: 200px;
+    color: black;
+
+}
+
+/* .mat-slider-thumb {
+    color: blue;
+    border-color: red;
+    background-color: blue;
+    border-radius: 25;
+}
+
+.mat-slider {
+    border-color: red;
+    background-color: rgb(247, 235, 190);
+    border-radius: 20;
+} */
+#patientdetails {
+    font-size: x-large;
+    width: 80%;
+    font-weight: 500;
+}
+
+mat-header-cell,
+mat-sort-header-container,
+mat-cell {
+    justify-content: center;
+}
+
+mat-header-cell {
+    font-size: large;
+
+}
+
+mat-header-row {
+    z-index: 0;
+}
+
+/* #btn-logout {
+    justify-content: right;
+} */
+
+
+.icon-button {
+    background-color: transparent;
+    border: none;
+}
+
+
+.doc-header {
+    display: flex;
+    justify-content: center;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: none;
+}
+
+.row_link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.image-style {
+    clip-path: circle();
+    max-width: 50%;
+    height: auto;
+    margin: 0 auto;
+}

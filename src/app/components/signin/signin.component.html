@@ -1,0 +1,98 @@
+<mat-toolbar color="primary" class="app-header">
+  <!-- <img class="logo" [src]="logo"> -->
+  <div><a href="#" target="_blank" class="positronx">AnastoCare</a></div>
+  <span class="nav-tool-items">
+    <button mat-button mat-raised-button>LogIn</button>
+    <button mat-button (click)="gotoRegister()">Register</button>
+    <!-- <button mat-button (click)="gotoDocPatient()">Doc-patient-home</button> -->
+    <!-- <button mat-button (click)="gotoAdmin()">Admin-home</button> -->
+  </span>
+</mat-toolbar>
+
+<div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+  <div class="login-form">
+    <form [formGroup]="form" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label>Enter Username</label>
+        <input type="text" formControlName="username" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Last Name is required</div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label>Enter Password</label>
+        <input type="password" formControlName="password" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+          <div *ngIf="f.password.errors.minlength">
+            Password must be at least 5 characters
+          </div>
+        </div>
+        <div class="form-group" (click)="resetPass()">
+          <span style=" cursor:pointer;
+          color:blue;
+          text-decoration:underline;">Forgot Password?</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Log in</button>
+        <button type="button" (click)="onReset()" class="btn btn-warning float-right">
+          Reset
+        </button>
+      </div>
+    </form>
+    <div *ngIf="expired" (click)="resendLink()"> <span style=" cursor:pointer;
+      color:blue;
+      text-decoration:underline;">Click to resend Reset Link.</span>
+    </div>
+  </div>
+</div>
+
+
+<ng-template id="custom-modal" #viewList let-modal>
+  <div class="modal-body">
+
+    <div class="main-wrapper" fxLayout="row" fxLayoutAlign="center center">
+      <div style="width: 69%;" class="login-form">
+        <form [formGroup]="reset" (ngSubmit)="forgotPassword()">
+          <div class="form-group">
+            <!-- <label>Enter Organisation Name</label> -->
+            <input type="text" style="margin-top: 16px" formControlName="username" class="form-control"
+              [ngClass]="{ 'is-invalid': submitted2 && reset.controls.username.errors }" placeholder="Enter Username" />
+            <div *ngIf="submitted2 && reset.controls.username.errors" class="invalid-feedback">
+              <div *ngIf="reset.controls.username.errors.required">Username is required</div>
+            </div>
+            <!-- <input type="password" style="margin-top: 16px" formControlName="password" class="form-control"
+              [ngClass]="{ 'is-invalid': submitted2 && reset.controls.password.errors }" placeholder="Enter Password" />
+            <div *ngIf="submitted2 && reset.controls.password.errors" class="invalid-feedback">
+              <div *ngIf="reset.controls.password.errors.required">Password is required</div>
+            </div>
+            <input type="password" style="margin-top: 16px" formControlName="confirmPassword" class="form-control"
+              [ngClass]="{ 'is-invalid': submitted2 && reset.controls.confirmPassword.errors }"
+              placeholder="Confirm Password" />
+            <div *ngIf="submitted2 && reset.controls.confirmPassword.errors" class="invalid-feedback">
+              <div *ngIf="reset.controls.confirmPassword.errors.required">
+                Confirm Password is required
+              </div>
+              <div *ngIf="reset.controls.confirmPassword.errors.matching">
+                Confirm Password does not match
+              </div>
+            </div> -->
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+              Confirm
+            </button>
+            <button type="button" (click)="Close()" class="btn btn-warning float-right">
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

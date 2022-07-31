@@ -1,0 +1,144 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="commonService.logo">
+
+    <div style="margin: 0 auto;">Health Report</div>
+    <!-- <div *ngIf='loggedInUser.userRole=="DOCTOR"'><a>{{loggedInUser.organisationName?'for\
+        '+loggedInUser.organisationName:""}}</a></div> -->
+    <!-- <button color="primary" id="btn-logout">
+            <mat-icon class="mat-icon-rtl-mirror" style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon" svgIcon="person">Profile</mat-icon>
+                
+    </button> -->
+
+    <!-- <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" id="btn-logout">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon"
+            (click)="logout()">logout
+        </mat-icon>
+    </button> -->
+
+
+    <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="commonService.logout()" mat-mini-fab color="primary">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<div style="margin-top: 4%;" class="container">
+    <div class="mat-display-1">
+
+        <p> {{patientName}}'s health report</p>
+        <!-- <p> {{patientObject["name"]}}</p> -->
+
+        <!-- <div style="padding: 2%;">
+            <mat-form-field style="width: 20%;float: right;">
+                
+                <input class="quantity" id="id_form-0-quantity" min="0" name="form-0-quantity" value="1" type="number">
+                <input matInput (keyup)="applyFilter($event.target.value,2)" placeholder="Search">
+            </mat-form-field>
+        </div> -->
+
+        <!-- <div style="padding: 1%">
+            <label for="rangeID" class="label"> Update Risk Factor</label>
+            <input class="quantity" id="rangeID" aria-label="rangeID2" min="0" max="10" name="form-0-quantity" value="7"
+             type="range" (change)="sliderChange()" placeholder="5" >
+             
+             
+        </div> -->
+
+        <!-- <div class="sliderClass">
+            <ngx-slider id ="rangeID2" #ngslide  [(value)]="defValue" 
+            (mouseup)="sliderChange($event)" aria-label="rangeID2" appearance="fill" [options]="options" ></ngx-slider>
+        </div> -->
+
+        <div class="range" style="width: 20%;float: right; padding: 2%;">
+
+            <span> Risk Factor: </span><b class="gridSizeValue">{{defValue}}</b>
+            <mat-slider #gridsize color="primary" (change)="sliderChange($event)" step="1" min="0" max="10"
+                tickInterval="1" thumbLabel [displayWith]="formatThumbLabel" [value]="defValue"></mat-slider>
+
+        </div>
+
+
+        <div class="form-group">
+            <button mat-raised-button color="primary" id="btn-vw-questionnaire" (click)="getQuestionnaire()"> View
+                Questionnaire </button>
+        </div>
+        <div class="form-group">
+            <!-- <div class="form-group">
+                <button mat-raised-button color="primary" id="btn-vw-questionnaire" (click)="viewReport()">View
+                    Report</button>
+            </div> -->
+            <button mat-raised-button id="button3id" (click)="alertPatient()">Alert Patient</button>
+        </div>
+
+        <div style="margin-top: 1%;" class="container">
+            <div style="width: 100%;">
+                <mat-form-field appearance="fill" style="float: left;">
+                    <!-- <mat-label>Toppings</mat-label> -->
+                    <mat-select disableOptionCentering (selectionChange)="changeInterval($event)"
+                        [(ngModel)]="timeInterval">
+                        <mat-option *ngFor="let topping of List;let i = index" [value]="i">{{topping}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div style="width: 100%;" id="container">
+            </div>
+        </div>
+
+        <!-- <p> (CHART GOES HERE)</p> -->
+
+        <div style="width: 100%;" id="container">
+
+        </div>
+
+        <div class="form-group">
+            <button mat-raised-button color="primary" id="btn-confirm-recovery" (click)="confirmRecovery()"> Confirm
+                Patient's recovery </button>
+        </div>
+
+        <!-- <span style="padding-left: 5%;">   Risk Factor: </span>
+            <b class="gridSizeValue">{{defValue}}</b>
+            <mat-slider #gridsize color="primary" style="width: 20%;"
+            (change)="sliderChange($event)" step="1" min="0" max="10"
+            tickInterval="1" thumbLabel [displayWith]="formatThumbLabel" [value]="defValue"></mat-slider> -->
+
+
+
+        <!-- <div class = "range" style="width: 20%;float: right; padding: 5%;">
+          
+            <span>   Risk Factor: </span><b class="gridSizeValue">{{defValue}}</b>
+            <mat-slider #gridsize color="primary"
+            (change)="sliderChange($event)" step="1" min="0" max="10"
+            tickInterval="1" thumbLabel [displayWith]="formatThumbLabel" [value]="defValue"></mat-slider>
+
+        </div> -->
+
+    </div>
+
+    <div style="padding-bottom: 6%;" class="patientProfile">
+        <h1 style="margin-left: 3%;">{{patientName}}'s Profile</h1>
+        <div style="margin-top: 3%; padding-bottom: 5%;" class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="mini-row">Name : {{patientName}}</div>
+                    <div class="mini-row">Email : {{patientEmail}}</div>
+                    <div class="mini-row">Phone : 1234567890</div>
+
+                </div>
+                <div class="col col2">
+                    <div class=" pic-col">
+                        <img class="image-style" [src]="uri?uri:default_pic" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="width: 100%;margin-bottom: 3%;" id="container2">
+        </div>
+    </div>

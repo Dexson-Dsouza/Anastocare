@@ -1,0 +1,70 @@
+<mat-toolbar style="position: sticky;" color="primary" class="app-header">
+    <img class="logo" [src]="commonService.logo">
+    <div style="margin: 0 auto;">Anastocare</div>
+    <button style="margin-right: 15px;" (click)="gotoHome()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">home
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="gotoProfile()" mat-mini-fab color="primary">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">person
+        </mat-icon>
+    </button>
+    <button style="margin-right: 15px;" (click)="commonService.logout()" mat-mini-fab color="primary">
+        <mat-icon style="margin-left: 10px;float: right;" aria-hidden="false" aria-label="Example home icon">logout
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<div class="container">
+    <div style="margin-top: 5vw;">
+        <h1 >Questions </h1>
+        <!-- <form class="example-container"> -->
+            <div *ngFor="let x of questionList; let i = index" class="form-group">
+                <div class="labels">
+                    <label style="font-size: 1.5vw;margin-bottom: 8px;" for="name">Q{{i+1}} {{x.description}}</label>
+                </div>
+                <br>
+                <div *ngIf="x.answerType==1">
+                    <mat-radio-group [(ngModel)]="x.answer">
+                        <mat-radio-button style="width: 15%;float: left;" value="0">Yes</mat-radio-button>
+                        <mat-radio-button style="width: 15%;float: left;" value="1">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div *ngIf="x.answerType==2" class="options">
+                    <mat-radio-group [(ngModel)]="x.answer">
+                        <mat-radio-button style="width: 33%;float: left;" value="0">
+                            <angular-emojis [name]="'grin'" size="30"> </angular-emojis>
+                        </mat-radio-button>
+                        <mat-radio-button style="width:33%;float: left;" value="0.5">
+                            <angular-emojis [name]="'slightly_smiling_face'" size="30"> </angular-emojis>
+                        </mat-radio-button>
+                        <mat-radio-button style="width: 33%;float: left;" value="1">
+                            <angular-emojis [name]="'slightly_frowning_face'" size="30"> </angular-emojis>
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div *ngIf="submitted && !x.answer" class="form-error" style="float: right; font-size: 1.4vw;font-weight: bolder;">
+                    Please answer Q{{i+1}}.
+                </div>
+                <br>
+            </div>
+
+            <!-- <div class="form-group">
+                <label>Gender</label>
+                <br>
+                <div>
+                    <mat-radio-group>
+                        <mat-radio-button style="width: 15%;float: left;" value="auto">Auto</mat-radio-button>
+                        <mat-radio-button style="width: 15%;float: left;" value="always">Always</mat-radio-button>
+                        <mat-radio-button style="width: 15%;float: left;" value="never">Never</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div *ngIf="submitted && f.name.errors && f.name.errors.required" class="form-error">
+                    Please answer this question.
+                </div>
+            </div> -->
+            <br>
+            <button style="margin-bottom: 2vw;font-size:2vw" (click)="onSubmit()" type="submit" class="btn btn-success">Submit</button>
+        <!-- </form> -->
+    </div>
+</div>
